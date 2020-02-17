@@ -31,6 +31,14 @@ def publish (args):
   facade = pypublish.Publisher(path)
   facade.publish()
 
+#args: path
+def setup (args):
+  print("Executing setup ... " + str(args))
+  
+  path = os.path.expanduser("~")
+  facade = pypublish.Publisher(path)
+  facade.setup()
+
 #args: type
 def help (args):
   print("Executing help ... " + str(args))
