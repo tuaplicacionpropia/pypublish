@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import codecs
+import hjson
 from setuptools import setup, find_packages
 
 def get_key (data, key, defaultValue=None):
@@ -9,12 +11,13 @@ def get_key (data, key, defaultValue=None):
     result = data[key]
   return result
 
-path = os.path.realpath(__file__)
+path = os.path.dirname(os.path.realpath(__file__))
 if path.endswith(os.path.sep):
   path = path[0:-1]
-fpath = os.path.join(self.path, "project.properties")
+fpath = os.path.join(path, "project.properties")
+print(fpath)
 if os.path.isfile(fpath):
-  fp = codecs.open(path, mode='r', encoding='utf-8')
+  fp = codecs.open(fpath, mode='r', encoding='utf-8')
   properties = hjson.load(fp)
   
   property_name = get_key(properties, "name")#pypublish
@@ -27,9 +30,10 @@ if os.path.isfile(fpath):
   property_keywords = get_key(properties, "keywords")#'jinja, hjson, files, generate'
   property_commands = get_key(properties, "commands")#publish, help
   scripts = []
-  for cmd in commands:
-    scripts.append('bin/' + property_name + '_' + cmd + '.cmd')
-    scripts.append('bin/' + property_name + '_' + cmd + '')
+  if property_commands is not None:
+    for cmd in property_commands:
+      scripts.append('bin/' + property_name + '_' + cmd + '.cmd')
+      scripts.append('bin/' + property_name + '_' + cmd + '')
   property_requires = get_key(properties, "requires")#['hjson>=2.0.2']
   
   versionA, versionB, versionC = property_version.split(".")
@@ -66,7 +70,7 @@ if os.path.isfile(fpath):
   if property_packageData is not None:
     property_packageData = {property_name: property_packageData}
   
-  
+  print("setting ...")
   setup(
     name=property_name,
     version=property_version,
